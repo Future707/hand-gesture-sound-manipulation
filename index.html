@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Gesture Sound Manipulation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ Gesture Sound Manipulation</h1>
+            <p class="subtitle">Control sound with your hands</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-section">
+                <div class="video-container">
+                    <video id="webcam" autoplay playsinline></video>
+                    <canvas id="canvas"></canvas>
+                    <canvas id="visualizer"></canvas>
+                    <div class="gesture-feedback" id="gestureFeedback"></div>
+                </div>
+                <div class="signature">
+                    <div class="signature-main">by Nuh Hurmanlı</div>
+                    <div class="signature-sub">from Future</div>
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="status" id="status">
+                    <span class="status-indicator"></span>
+                    <span id="statusText">Initializing...</span>
+                </div>
+
+                <div class="control-group">
+                    <h3>🎵 Audio Mode</h3>
+                    <button id="startBtn" class="btn btn-primary">Start System</button>
+                    <button id="stopBtn" class="btn btn-secondary" disabled>Stop Audio</button>
+                    <button id="micBtn" class="btn btn-mic" disabled>🎤 Voice Mode</button>
+                    <button id="recordBtn" class="btn btn-record" disabled>⏺️ Record</button>
+                </div>
+
+                <div class="control-group">
+                    <h3>🎭 Voice Effects</h3>
+                    <div class="button-group voice-effects">
+                        <button class="btn btn-effect active" data-effect="normal">Normal</button>
+                        <button class="btn btn-effect" data-effect="robot">🤖 Robot</button>
+                        <button class="btn btn-effect" data-effect="chipmunk">🐿️ Chipmunk</button>
+                        <button class="btn btn-effect" data-effect="monster">👹 Monster</button>
+                        <button class="btn btn-effect" data-effect="alien">👽 Alien</button>
+                        <button class="btn btn-effect" data-effect="echo">🔊 Echo Cave</button>
+                        <button class="btn btn-effect" data-effect="underwater">🌊 Underwater</button>
+                        <button class="btn btn-effect" data-effect="telephone">📞 Telephone</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>🎹 Sound Generator</h3>
+                    <div class="button-group">
+                        <button class="btn btn-sound active" data-sound="synth">Synthesizer</button>
+                        <button class="btn btn-sound" data-sound="ambient">Ambient</button>
+                        <button class="btn btn-sound" data-sound="percussion">Percussion</button>
+                        <button class="btn btn-sound" data-sound="theremin">Theremin</button>
+                        <button class="btn btn-sound" data-sound="choir">Choir</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>⚙️ Adjustable Parameters</h3>
+                    <div class="slider-control">
+                        <label>
+                            <span>Pitch Shift</span>
+                            <input type="range" id="pitchShift" min="-12" max="12" value="0" step="0.1">
+                            <span class="slider-value" id="pitchShiftValue">0</span>
+                        </label>
+                    </div>
+                    <div class="slider-control">
+                        <label>
+                            <span>Distortion</span>
+                            <input type="range" id="distortion" min="0" max="100" value="0">
+                            <span class="slider-value" id="distortionValue">0</span>
+                        </label>
+                    </div>
+                    <div class="slider-control">
+                        <label>
+                            <span>Reverb Size</span>
+                            <input type="range" id="reverbSize" min="0" max="100" value="50">
+                            <span class="slider-value" id="reverbSizeValue">50</span>
+                        </label>
+                    </div>
+                    <div class="slider-control">
+                        <label>
+                            <span>Vibrato Speed</span>
+                            <input type="range" id="vibratoSpeed" min="0" max="20" value="5">
+                            <span class="slider-value" id="vibratoSpeedValue">5</span>
+                        </label>
+                    </div>
+                    <div class="slider-control">
+                        <label>
+                            <span>Vibrato Depth</span>
+                            <input type="range" id="vibratoDepth" min="0" max="100" value="0">
+                            <span class="slider-value" id="vibratoDepthValue">0</span>
+                        </label>
+                    </div>
+                    <div class="slider-control">
+                        <label>
+                            <span>Harmonics</span>
+                            <input type="range" id="harmonics" min="0" max="10" value="2">
+                            <span class="slider-value" id="harmonicsValue">2</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>📊 Live Parameters</h3>
+                    <div class="parameter-display">
+                        <div class="param">
+                            <span class="param-label">Volume</span>
+                            <div class="param-bar">
+                                <div class="param-fill" id="volumeBar"></div>
+                            </div>
+                            <span class="param-value" id="volumeValue">0%</span>
+                        </div>
+                        <div class="param">
+                            <span class="param-label">Pitch</span>
+                            <div class="param-bar">
+                                <div class="param-fill" id="pitchBar"></div>
+                            </div>
+                            <span class="param-value" id="pitchValue">0 Hz</span>
+                        </div>
+                        <div class="param">
+                            <span class="param-label">Filter</span>
+                            <div class="param-bar">
+                                <div class="param-fill" id="filterBar"></div>
+                            </div>
+                            <span class="param-value" id="filterValue">0 Hz</span>
+                        </div>
+                        <div class="param">
+                            <span class="param-label">Effect Mix</span>
+                            <div class="param-bar">
+                                <div class="param-fill" id="effectBar"></div>
+                            </div>
+                            <span class="param-value" id="effectValue">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>🎮 Gesture Guide</h3>
+                    <div class="gesture-guide">
+                        <div class="gesture-item">
+                            <span class="gesture-icon">🖐️</span>
+                            <span class="gesture-desc">Hand Height → Volume</span>
+                        </div>
+                        <div class="gesture-item">
+                            <span class="gesture-icon">🤏</span>
+                            <span class="gesture-desc">Pinch → Pitch Bend</span>
+                        </div>
+                        <div class="gesture-item">
+                            <span class="gesture-icon">🔄</span>
+                            <span class="gesture-desc">Rotation → Filter</span>
+                        </div>
+                        <div class="gesture-item">
+                            <span class="gesture-icon">👐</span>
+                            <span class="gesture-desc">Two Hands → Effects</span>
+                        </div>
+                        <div class="gesture-item">
+                            <span class="gesture-icon">✊</span>
+                            <span class="gesture-desc">Fist → Mute</span>
+                        </div>
+                        <div class="gesture-item">
+                            <span class="gesture-icon">👋</span>
+                            <span class="gesture-desc">Wave → Trigger</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="enhancedAudioEngine.js"></script>
+    <script src="visualizer.js"></script>
+    <script src="gestureDetector.js"></script>
+    <script src="enhancedApp.js"></script>
+</body>
+</html>
